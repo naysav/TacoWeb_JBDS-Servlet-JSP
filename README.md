@@ -1,5 +1,6 @@
 # TacoWeb_JBDS-Servlet-JSP
-# Я использовал 3 БД: product, tacos, user_account.
+Я использовал 3 БД: product, tacos, user_account.
+
 Содержание БД product, с которым работает моя программа:
 CODE | NAME                                |  PRICE
 P001 | Свежеиспеченная кукурузная тортилья |  23
@@ -11,6 +12,7 @@ P006 | ростки фасоли МАШ                   |  21
 P007 | сыр творожный                       |  11
 P008 | авокадо                             |  23
 
+```sql
 create table product
 (
     CODE  varchar(20)  not null
@@ -18,7 +20,9 @@ create table product
     NAME  varchar(128) not null,
     PRICE float        not null
 );
- 
+```
+
+```sql
 create table tacos
 (
     chicken     varchar(60) null,
@@ -33,7 +37,8 @@ create table tacos
     flapjack    varchar(60) null,
     user        varchar(40) null
 );
-
+```
+```sql
 create table user_account
 (
     USER_NAME varchar(30) not null
@@ -41,3 +46,4 @@ create table user_account
     GENDER    varchar(1)  not null,
     PASSWORD  varchar(30) not null
 );
+```
