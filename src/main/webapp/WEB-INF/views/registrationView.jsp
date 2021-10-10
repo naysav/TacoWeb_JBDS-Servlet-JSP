@@ -25,7 +25,7 @@
             <div class="card-header font-weight-bold text-center">
                 Регистрация
             </div>
-            <form method="POST" action="${pageContext.request.contextPath}/registration">
+            <form method="POST" action="${pageContext.request.contextPath}/TacoBoom?rule=registrationProcess">
                 <div class="pl-2">
                     <div class="form-group pt-2">
                         <label for="lgn" class="col-sm-4 col-form-label"><sup>*</sup>Логин:</label>
@@ -56,7 +56,6 @@
                             </select>
                         </div>
                     </div>
-
                 </div>
                 <div class="container text-center pb-3">
                     <button type="submit" class="btn btn-outline-primary" style="width: 12rem;">Зарегистрироваться</button>

@@ -1,8 +1,16 @@
-package naysav.taco.beans;
+package naysav.taco.repository;
 
+// класс Card хранит информацию о банковской карте пользователя,
+// с которой производится оплата, для ее отображения в сообщении
+// об успешной оплате
 public class Card {
+	// number хранит номер карты пользователя
 	private String number;
+
+	// name хранит имя владельца карты
 	private String name;
+
+	// data хранит срок действия карты
 	private String data;
 
 	public Card(String number, String name, String data) {

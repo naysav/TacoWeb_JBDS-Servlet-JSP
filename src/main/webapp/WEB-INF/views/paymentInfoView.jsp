@@ -33,7 +33,7 @@
                     </div>
 
                     <div class="container text-center pb-4">
-                        <a href="${pageContext.request.contextPath}/"
+                        <a href="${pageContext.request.contextPath}/TacoBoom?rule=homePage"
                            class="btn btn-outline-primary pb-2" style="width: 15rem;">На главную страницу</a>
                     </div>
             </div>

@@ -21,7 +21,7 @@
 <body>
 
 <c:choose>
-    <c:when test="${user == null}">
+    <c:when test="${loginedUser == null}">
         <jsp:include page="_navbar_logIN.jsp"/>
     </c:when>
     <c:otherwise>

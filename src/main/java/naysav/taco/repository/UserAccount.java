@@ -1,8 +1,15 @@
-package naysav.taco.beans;
+package naysav.taco.repository;
 
+// класс UserAccount хранит информацию об аккаунте пользователя
+// для чтения и записи в БД USER_ACCOUNT
 public class UserAccount {
+	// userNAme хранит имя аккаунта
 	private String userName;
+
+	// gender хранит пол владельца аккаунта
 	private String gender;
+
+	// userName хранит имя аккаунта
 	private String password;
 
 	public UserAccount() {

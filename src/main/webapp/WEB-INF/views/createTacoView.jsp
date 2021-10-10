@@ -24,7 +24,7 @@
     <p style="color: red;">${errorString}</p>
     <p style="color: green;">${successMessage}</p>
 
-    <form method="POST" action="${pageContext.request.contextPath}/createTaco">
+    <form method="POST" action="${pageContext.request.contextPath}/TacoBoom?rule=createTacoProcess">
         <div class="pl-2">
             <div class="custom-control custom-checkbox">
                 <input type="checkbox" class="custom-control-input" name="flapjack" id="cb1" value="P001" required>

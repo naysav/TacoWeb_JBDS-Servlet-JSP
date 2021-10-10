@@ -1,7 +1,9 @@
-package naysav.taco.filter;
+package naysav.taco.servlet.filter;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Map;
 
@@ -15,11 +17,11 @@ import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 
-import naysav.taco.conn.ConnectionUtils;
-import naysav.taco.utils.MyUtils;
 
 @WebFilter(filterName = "jdbcFilter", urlPatterns = { "/*" })
 public class JDBCFilter implements Filter {
+
+	public static final String ATT_NAME_CONNECTION = "ATTRIBUTE_FOR_CONNECTION";
 
 	public JDBCFilter() {
 	}
@@ -32,6 +34,41 @@ public class JDBCFilter implements Filter {
 	@Override
 	public void destroy() {
 
+	}
+
+	// Подключение к MySQL.
+	public static Connection getConnection()
+			throws ClassNotFoundException, SQLException {
+		// Параметры соединения, соответствующие структуре:
+		// jdbc:mysql://localhost:3306/tacoweb
+		String hostName = "localhost";
+		String dbName = "tacoweb";
+		String userName = "root";
+		String password = "root";
+
+		Class.forName("com.mysql.jdbc.Driver");
+
+		// Структура URL Connection для MySQL:
+		// jdbc:mysql://localhost:3306/tacoweb
+		String connectionURL = "jdbc:mysql://" + hostName + ":3306/" + dbName;
+
+		Connection conn = DriverManager.getConnection(connectionURL, userName,
+				password);
+		return conn;
+	}
+
+	public static void closeQuietly(Connection conn) {
+		try {
+			conn.close();
+		} catch (Exception e) {
+		}
+	}
+
+	public static void rollbackQuietly(Connection conn) {
+		try {
+			conn.rollback();
+		} catch (Exception e) {
+		}
 	}
 
 	// Проверить является ли Servlet цель текущего request?
@@ -84,12 +121,14 @@ public class JDBCFilter implements Filter {
 			Connection conn = null;
 			try {
 				// Создать объект Connection подключенный к database.
-				conn = ConnectionUtils.getConnection();
+				conn = getConnection();
 				// Настроить автоматический commit false, чтобы активно контролировать.
 				conn.setAutoCommit(false);
 
 				// Сохранить объект Connection в attribute в request.
-				MyUtils.storeConnection(request, conn);
+				// Данная информация хранения существует только во время запроса (request)
+				// до тех пор, пока данные возвращаются приложению пользователя.
+				request.setAttribute(ATT_NAME_CONNECTION, conn);
 
 				// Разрешить request продвигаться далее.
 				// (Далее к следующему Filter tiếp или к цели).
@@ -99,10 +138,10 @@ public class JDBCFilter implements Filter {
 				conn.commit();
 			} catch (Exception e) {
 				e.printStackTrace();
-				ConnectionUtils.rollbackQuietly(conn);
+				rollbackQuietly(conn);
 				throw new ServletException();
 			} finally {
-				ConnectionUtils.closeQuietly(conn);
+				closeQuietly(conn);
 			}
 		}
 		// Для обычных request (image,css,html,..)

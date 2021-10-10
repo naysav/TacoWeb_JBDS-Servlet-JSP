@@ -25,7 +25,7 @@
                 <div class="card-header font-weight-bold text-center">
                     Авторизация
                 </div>
-                <form method="POST" action="${pageContext.request.contextPath}/login">
+                <form method="POST" action="${pageContext.request.contextPath}/TacoBoom?rule=loginProcess">
                     <div class="pl-2">
                         <div class="form-group pt-2">
                             <label for="uN" class="col-sm-4 col-form-label">Логин:</label>
@@ -44,7 +44,7 @@
                             <label class="form-check-label " for="inlineFormCheck">
                                 Запомнить меня
                             </label>
-                            <a href="${pageContext.request.contextPath}/registration" class="ml-5 card-link col-sm-4">Еще не зарегистрированы?</a>
+                            <a href="${pageContext.request.contextPath}/TacoBoom?rule=registrationPage" class="ml-5 card-link col-sm-4">Еще не зарегистрированы?</a>
                         </div>
                     </div>
 
@@ -52,7 +52,7 @@
                         <button type="submit" class="btn btn-outline-success pb-2" style="width: 10rem;">Войти</button>
                     </div>
                     <div class="container text-center pb-3">
-                        <a href="${pageContext.request.contextPath}/home" type="button" class="card-link">Вернуться</a>
+                        <a href="${pageContext.request.contextPath}/TacoBoom?rule=homePage" type="button" class="card-link">Вернуться</a>
                     </div>
                 </form>
             </div>

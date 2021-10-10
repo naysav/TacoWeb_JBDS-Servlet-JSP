@@ -36,14 +36,14 @@
                     ${taco.cheese.name}</c:if><c:if test="${taco.avocado.name != ''}">,
                     ${taco.avocado.name}</c:if>.
         </p>
-        <p>Стоимость: ${taco.totalPrice} руб. <a href="deleteTaco?id=${taco.id}">Удалить</a></p>
+        <p>Стоимость: ${taco.totalPrice} руб. <a href="TacoBoom?rule=deleteTacoProcess&id=${taco.id}">Удалить</a></p>
     </c:forEach>
 
     <c:if test="${orderPrice > 0}">
         <div class="d-block float-right">
             <h5>Итоговая сумма заказа - ${orderPrice} руб.</h5>
             <div class="d-block float-right pt-2">
-                <a href="${pageContext.request.contextPath}/payment" type="button" class="btn btn-outline-primary">Оплатить заказ</a>
+                <a href="${pageContext.request.contextPath}/TacoBoom?rule=paymentPage" type="button" class="btn btn-outline-primary">Оплатить заказ</a>
             </div>
         </div>
     </c:if>

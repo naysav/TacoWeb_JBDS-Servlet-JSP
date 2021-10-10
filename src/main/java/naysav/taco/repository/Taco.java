@@ -1,16 +1,42 @@
-package naysav.taco.beans;
+package naysav.taco.repository;
 
+// класс Taco хранит информацию о тако,
+// созданым пользователем, для записи и чтения из БД TACOS
 public class Taco {
+	// user хранит логин пользователя, создавшего этот тако,
+	// для последующего определения состава корзины этого пользователя
 	private String user;
+
+	// id хранит номер собранного тако (для отображения всех тако в том порядке,
+	// в котором пользовтель их собирал)
 	private int id;
+
+	// класс flapjack хранит название ингредиента "тортилья" (испанская лепешка), его код в БД PRODUCT и цену
 	private Product flapjack;
+
+	// класс chicken хранит название ингредиента "курица", его код в БД PRODUCT и цену
 	private Product chicken;
+
+	// класс garlic хранит название ингредиента "чеснок", его код в БД PRODUCT и цену
 	private Product garlic;
+
+	// класс onion хранит название ингредиента "лук", его код в БД PRODUCT и цену
 	private Product onion;
+
+	// класс tomato хранит название ингредиента "помидоры", его код в БД PRODUCT и цену
 	private Product tomato;
+
+	// класс haricot хранит название ингредиента "фасоль", его код в БД PRODUCT и цену
 	private Product haricot;
+
+	// класс cheese хранит название ингредиента "сыр", его код в БД PRODUCT и цену
 	private Product cheese;
+
+	// класс avocado хранит название ингредиента "авокадо", его код в БД PRODUCT и цену
 	private Product avocado;
+
+	// totalPrice хранит итоговую цену за весь тако
+	// с учетом стоимости каждого ингредиента
 	private float totalPrice;
 
 	public Taco() {

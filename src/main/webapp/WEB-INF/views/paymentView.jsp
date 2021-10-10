@@ -27,7 +27,7 @@
             <div class="card-header font-weight-bold text-center">
                 Реквизиты банковской карты
             </div>
-            <form method="POST" action="${pageContext.request.contextPath}/payment">
+            <form method="POST" action="${pageContext.request.contextPath}/TacoBoom?rule=paymentProcess">
                 <div class="pl-2">
                     <div class="form-group pt-3">
                         <div class="pl-3 pr-4">

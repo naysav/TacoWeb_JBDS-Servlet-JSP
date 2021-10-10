@@ -1,9 +1,15 @@
-package naysav.taco.beans;
+package naysav.taco.repository;
 
+// класс Product хранит информацию об ингредиенте тако
+// для чтения из БД PRODUCT и записи в класс Taco
 public class Product {
-
+	// code хранит код продукта, по которому происходит его поиск в БД PRODUCT
 	private String code;
+
+	// name хранит наименование продукта, под которым он записан в БД PRODUCT
 	private String name;
+
+	// price хранит стоимость продукта, определенную в БД PRODUCT
 	private float price;
 
 	public Product() {

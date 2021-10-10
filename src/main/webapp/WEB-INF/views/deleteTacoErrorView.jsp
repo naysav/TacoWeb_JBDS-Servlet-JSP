@@ -22,7 +22,7 @@
 <h3>Удалить тако не получилось!</h3>
 
 <p style="color: red;">${errorString}</p>
-<a href="${pageContext.request.contextPath}/tacoBasket">Вернуться в корзину</a>
+<a href="${pageContext.request.contextPath}/TacoBoom?rule=TacoBasketPage">Вернуться в корзину</a>
 
 <%--<jsp:include page="_footer.jsp"/>--%>
 

@@ -1,4 +1,4 @@
-package naysav.taco.utils;
+package naysav.taco.services;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -7,11 +7,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import naysav.taco.beans.Product;
-import naysav.taco.beans.Taco;
-import naysav.taco.beans.UserAccount;
+import naysav.taco.repository.Product;
+import naysav.taco.repository.Taco;
+import naysav.taco.repository.UserAccount;
 
-public class DBUtils {
+public class TacoServices {
 
 	public static UserAccount findUser(Connection conn, //
 	                                   String userName, String password) throws SQLException {
@@ -139,6 +139,9 @@ public class DBUtils {
 		pstm.executeUpdate();
 	}
 
+	// Метод вставляет тако (его ингредиенты), собранный пользователем на странице
+	// "Собрать тако", и его номер (ID), получаемый из подсчета уже имеющихся ID тако,
+	// в БД TACOS
 	public static void insertTaco(Connection conn, Taco taco) throws SQLException {
 		String sqlID = "SELECT count(*) AS res FROM tacos WHERE user = ?";
 
@@ -169,6 +172,9 @@ public class DBUtils {
 		pstm.executeUpdate();
 	}
 
+	// Метод создает список, содержащий в себе все собранные пользователем тако,
+	// для последующего отображения в корзине пользователя.
+	// Выбрасыет SQLException, если
 	public static List<Taco> queryTaco(Connection conn, UserAccount loginedUser) throws SQLException {
 		String sql = "Select a.id, a.flapjack, a.chicken, a.garlic, a.onion, a.tomato, a.haricot, a.cheese, a.avocado," +
 				" a.total_price from tacos a WHERE user = ?";
@@ -195,6 +201,8 @@ public class DBUtils {
 		return list;
 	}
 
+	// Метод удаляет тако, который захотел удалить пользователь из корзины,
+	// с пересчетом ID
 	public static void deleteTaco(Connection conn, UserAccount loginedUser, int id) throws SQLException {
 		String sqlDelete = "DELETE FROM tacos WHERE id = ? AND user = ?";
 
@@ -215,6 +223,7 @@ public class DBUtils {
 		pstm.executeUpdate();
 	}
 
+	// Метод считает итоговую стоимость всех тако, собранных пользователем, для отображения в корзине
 	public static float countOrderPrice(Connection conn, UserAccount loginedUser) throws SQLException {
 		String sql = "SELECT SUM(total_price) AS res FROM tacos WHERE user = ?";
 
@@ -230,6 +239,7 @@ public class DBUtils {
 		return orderPrice;
 	}
 
+	// Метод очищает корзину пользователя после успешной оплаты
 	public static void cleanBasket(Connection conn, UserAccount loginedUser) throws SQLException {
 		String sql = "DELETE FROM tacos WHERE user = ?";
 
