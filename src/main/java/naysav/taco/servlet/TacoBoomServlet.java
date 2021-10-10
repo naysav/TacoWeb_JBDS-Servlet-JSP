@@ -1,36 +1,23 @@
 package naysav.taco.servlet;
-import naysav.taco.repository.Card;
-import naysav.taco.repository.Taco;
-import naysav.taco.repository.UserAccount;
-import naysav.taco.services.TacoServices;
+import naysav.taco.repository.*;
+import naysav.taco.services.TacoBoomServices;
 
 import java.io.IOException;
-
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-//import javax.annotation.Resource;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
-import javax.sql.DataSource;
-import java.io.IOException;
 import java.rmi.ServerException;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
 @WebServlet(urlPatterns = {"/TacoBoom"})
 public class TacoBoomServlet extends HttpServlet {
-	private static final long serialVersionUID = 1L;
 
+	// ATT_NAME_CONNECTION - имя атрибута, хранящего соединение с БД
 	public static final String ATT_NAME_CONNECTION = "ATTRIBUTE_FOR_CONNECTION";
 
+	// ATT_NAME_USER_NAME - имя атрибута, хранящего cookie пользователя
 	private static final String ATT_NAME_USER_NAME = "ATTRIBUTE_FOR_STORE_USER_NAME_IN_COOKIE";
 
 	public TacoBoomServlet() {
@@ -39,19 +26,14 @@ public class TacoBoomServlet extends HttpServlet {
 
 
 
-	private UserAccount checkAuthorization(HttpServletRequest request) throws Exception {
+	private UserAccount getLoginedUser(HttpServletRequest request) throws Exception {
 		HttpSession session = request.getSession();
-		// Проверить, вошел ли пользователь в систему (login) или нет.
 		UserAccount loginedUser = (UserAccount) session.getAttribute("loginedUser");;
-
-//		if (loginedUser == null)
-//			session.setAttribute("loginedUser", loginedUser);
-
 		session.setAttribute("loginedUser", loginedUser);
-		System.out.println("checkHome: lU -> " + session.getAttribute("loginedUser"));
 		return loginedUser;
 	}
 
+	// Метод отвечает за выбор загружаемой jsp-страницы
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -98,32 +80,34 @@ public class TacoBoomServlet extends HttpServlet {
 
 	}
 
+	// Метод загружет главную страницу с информацией о сервисе - homeView.jsp
 	private void loadHomePage(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/views/homeView.jsp");
-		UserAccount loginedUser = checkAuthorization(request);
+		UserAccount loginedUser = getLoginedUser(request);
 
 		dispatcher.forward(request, response);
 	}
 
+	// Метод загружает авторизационную форму - loginView.jsp
 	private void loadLoginPage(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/views/loginView.jsp");
-		UserAccount loginedUser = checkAuthorization(request);
+		UserAccount loginedUser = getLoginedUser(request);
 
-		request.setAttribute("user", loginedUser);
 		dispatcher.forward(request, response);
 	}
 
+	// Метод загружает регистрационную форму - registrationView.jsp
 	private void loadRegistrationPage(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/views/registrationView.jsp");
-		UserAccount loginedUser = checkAuthorization(request);
+		UserAccount loginedUser = getLoginedUser(request);
 
-		request.setAttribute("user", loginedUser);
 		dispatcher.forward(request, response);
 	}
 
+	// Метод загружает форму создания тако из ингредиентов - createTacoView.jsp
 	private void loadCreateTacoPage(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/views/createTacoView.jsp");
-		UserAccount loginedUser = checkAuthorization(request);
+		UserAccount loginedUser = getLoginedUser(request);
 		HttpSession session = request.getSession();
 
 		if (loginedUser == null) {
@@ -133,14 +117,14 @@ public class TacoBoomServlet extends HttpServlet {
 			return;
 		}
 
-		request.setAttribute("user", loginedUser);
-		System.out.println("loadCreateTacoPage");
 		dispatcher.forward(request, response);
 	}
 
+	// Метод загружает страницу со списком созданных пользователем тако
+	// и их суммарной стоимостью - tacoBasketView.jsp
 	private void loadTacoBasketPage(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/views/tacoBasketView.jsp");
-		UserAccount loginedUser = checkAuthorization(request);
+		UserAccount loginedUser = getLoginedUser(request);
 		HttpSession session = request.getSession();
 
 		if (loginedUser == null) {
@@ -150,16 +134,11 @@ public class TacoBoomServlet extends HttpServlet {
 			return;
 		}
 
-		request.setAttribute("user", loginedUser);
-
-		// Получить объект Connection сохраненный в attribute в request.
-		Connection conn = (Connection) request.getAttribute(ATT_NAME_CONNECTION);
-
 		String errorString = null;
 
 		List<Taco> list = null;
 		try {
-			list = TacoServices.queryTaco(conn, loginedUser);
+			list = TacoBoomServices.queryTaco(loginedUser);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			errorString = e.getMessage();
@@ -167,12 +146,11 @@ public class TacoBoomServlet extends HttpServlet {
 
 		float orderPrice = 0;
 		try {
-			orderPrice = TacoServices.countOrderPrice(conn, loginedUser);
+			orderPrice = TacoBoomServices.countOrderPrice(loginedUser);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			errorString = e.getMessage();
 		}
-
 
 		// Сохранить информацию в request attribute перед тем как forward к views.
 		request.setAttribute("errorString", errorString);
@@ -182,21 +160,23 @@ public class TacoBoomServlet extends HttpServlet {
 		dispatcher.forward(request, response);
 	}
 
+	/*
+	Метод удаляет тако, выбранный пользователем в корзине заказа, из БД tacos
+	и перенаправляет на страницу tacoBasketView.jsp с обновленным списком тако
+	*/
 	private void deleteTacoProcess(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		// Получить объект Connection сохраненный в attribute в request.
-		Connection conn = (Connection) request.getAttribute(ATT_NAME_CONNECTION);
+		HttpSession session = request.getSession();
 
+		// id тако пользователя, который нужно удалить
 		String parameter = (String) request.getParameter("id");
 		int id = Integer.parseInt(parameter);
 
-		HttpSession session = request.getSession();
-		// Внести тако определенного пользователя в корзину
+		//
 		UserAccount loginedUser = (UserAccount) session.getAttribute("loginedUser");
-
 		String errorString = null;
 
 		try {
-			TacoServices.deleteTaco(conn, loginedUser, id);
+			TacoBoomServices.deleteTaco(loginedUser, id);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			errorString = e.getMessage();
@@ -206,7 +186,7 @@ public class TacoBoomServlet extends HttpServlet {
 		if (errorString != null) {
 			// Сохранить информацию в request attribute перед тем как forward к views.
 			request.setAttribute("errorString", errorString);
-			//
+			// Перенаправление
 			RequestDispatcher dispatcher = request.getServletContext()
 					.getRequestDispatcher("/WEB-INF/views/deleteTacoErrorView.jsp");
 			dispatcher.forward(request, response);
@@ -218,40 +198,38 @@ public class TacoBoomServlet extends HttpServlet {
 		}
 	}
 
+	/*
+	Метод загружает страницу с формой для заполнения реквизитов
+	банковской картыи их суммарной стоимостью - paymentView.jsp
+	 */
 	private void loadPaymentPage(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/views/paymentView.jsp");
-		UserAccount loginedUser = checkAuthorization(request);
+		UserAccount loginedUser = getLoginedUser(request);
 
-		request.setAttribute("user", loginedUser);
-		System.out.println("loadPaymentPage");
 		dispatcher.forward(request, response);
 	}
 
+	/*
+	Метод загружает страницу с информацией об успешной оплате (реквезиты карты и потраченную сумму),
+	при этом очищая корзину пользователя - paymentInfoView.jsp
+	 */
 	private void loadPaymentInfoPage(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		HttpSession session = request.getSession();
 
 		// Проверить, вошел ли пользователь в систему (login) или нет.
 		UserAccount loginedUser = (UserAccount) session.getAttribute("loginedUser");
-//
-//		if (loginedUser == null) {
-//			session.setAttribute("returnPage", "/tacoBasket");
-//			response.sendRedirect(request.getContextPath() + "/login");
-//			return;
-//		}
 
-		// Получить объект Connection сохраненный в attribute в request.
-		Connection conn = (Connection) request.getAttribute(ATT_NAME_CONNECTION);
 		String errorString = null;
 		float orderPrice = 0;
 
 		try {
-			orderPrice = TacoServices.countOrderPrice(conn, loginedUser);
+			orderPrice = TacoBoomServices.countOrderPrice(loginedUser);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			errorString = e.getMessage();
 		}
 		try {
-			TacoServices.cleanBasket(conn, loginedUser);
+			TacoBoomServices.cleanBasket(loginedUser);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			errorString = e.getMessage();
@@ -287,6 +265,7 @@ public class TacoBoomServlet extends HttpServlet {
 		return;
 	}
 
+	// Метод отвечает за выбор метода обработки поступивших данных
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -313,6 +292,12 @@ public class TacoBoomServlet extends HttpServlet {
 		}
 	}
 
+	/*
+	После нажатия кнопки "Войти" на странице loginView.jsp этот метод проверяет валидность
+	логина и пароля, ища пользователя с таким логином в таблице USER_ACCOUNT, и в случае, если находит,
+	перенаправляет на страницу, откуда была вызвана форма авторизации,
+	иначе перенаправляет на страницу loginView.jsp с сообщением об ошибке.
+	 */
 	private void loginProcess(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		String userName = request.getParameter("userName");
 		String password = request.getParameter("password");
@@ -327,11 +312,9 @@ public class TacoBoomServlet extends HttpServlet {
 			hasError = true;
 			errorString = "Логин и пароль обязательны!";
 		} else {
-			// Получить объект Connection сохраненный в attribute в request.
-			Connection conn = (Connection) request.getAttribute(ATT_NAME_CONNECTION);
 			try {
 				// Найти user в DB.
-				user = TacoServices.findUser(conn, userName, password);
+				user = TacoBoomServices.findUserNP(userName, password);
 
 				if (user == null) {
 					hasError = true;
@@ -390,22 +373,33 @@ public class TacoBoomServlet extends HttpServlet {
 		}
 	}
 
+	/*
+	После заполнения всех полей на странице registrationView.jsp этот метод
+	проверяет есть ли уже такой такой пользователь, совпадают ли пароли и если все хорошо,
+	вставляет в таблицу USER_ACCOUNT поля USER_NAME, GENDER, PASSWORD
+	 */
 	private void registrationProcess(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		System.out.println("registrationProcess");
-		// Получить объект Connection сохраненный в attribute в request.
-		Connection conn = (Connection) request.getAttribute(ATT_NAME_CONNECTION);
-
 		String login = (String) request.getParameter("login");
 		String password1 = (String) request.getParameter("password1");
 		String password2 = (String) request.getParameter("password2");
 		String gender = (String) request.getParameter("gender");
 
 		UserAccount userAccount = new UserAccount(login, gender, password1);
-
+		UserAccount alreadyUser = null;
 		String errorString = null;
 
+		try {
+			alreadyUser = TacoBoomServices.findUser(login);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			errorString = e.getMessage();
+		}
+
+		if (login == alreadyUser.getUserName())
+			errorString = "Такой логин уже занят!";
+
 		if (!(password1.equals(password2))) {
-			errorString = "Passwords is different!";
+			errorString += " Пароли отличаются!";
 		}
 
 		// Паролем является строка [a-zA-Z_0-9]
@@ -414,12 +408,12 @@ public class TacoBoomServlet extends HttpServlet {
 
 		if (password1 == null || !password1.matches(regex) ||
 				password2 == null || !password2.matches(regex)) {
-			errorString += " Passwords should contain 4-10 characters (a-zA-Z_0-9)!";
+			errorString += " Пароли должны содержать 4-10 символов (a-zA-Z_0-9)!";
 		}
 
 		if (errorString == null) {
 			try {
-				TacoServices.insertUserAccount(conn, userAccount);
+				TacoBoomServices.insertUserAccount(userAccount);
 			} catch (SQLException e) {
 				e.printStackTrace();
 				errorString = e.getMessage();
@@ -443,10 +437,12 @@ public class TacoBoomServlet extends HttpServlet {
 		}
 	}
 
+	/*
+	После нажатия кнопки "Добавить в корзину" на странице createTacoView.jsp этот метод
+	создает модель тако и вставляет ингредиенты тако, id тако и логин пользователя,
+	который его создал, в таблицу TACOS
+	 */
 	private void createTacoProcess(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		// Получить объект Connection сохраненный в attribute в request.
-		Connection conn = (Connection) request.getAttribute(ATT_NAME_CONNECTION);
-
 		String flapjackCode = (String) request.getParameter("flapjack");
 		String chickenCode = (String) request.getParameter("chicken");
 		String garlicCode = (String) request.getParameter("garlic");
@@ -464,14 +460,14 @@ public class TacoBoomServlet extends HttpServlet {
 
 		try {
 			taco = new Taco(loginedUser.getUserName(),
-					TacoServices.findProduct(conn, flapjackCode),
-					TacoServices.findProduct(conn, chickenCode),
-					TacoServices.findProduct(conn, garlicCode),
-					TacoServices.findProduct(conn, onionCode),
-					TacoServices.findProduct(conn, tomatoCode),
-					TacoServices.findProduct(conn, haricotCode),
-					TacoServices.findProduct(conn, cheeseCode),
-					TacoServices.findProduct(conn, avocadoCode));
+					TacoBoomServices.findProduct(flapjackCode),
+					TacoBoomServices.findProduct(chickenCode),
+					TacoBoomServices.findProduct(garlicCode),
+					TacoBoomServices.findProduct(onionCode),
+					TacoBoomServices.findProduct(tomatoCode),
+					TacoBoomServices.findProduct(haricotCode),
+					TacoBoomServices.findProduct(cheeseCode),
+					TacoBoomServices.findProduct(avocadoCode));
 		} catch (SQLException e) {
 			e.printStackTrace();
 			errorString = e.getMessage();
@@ -479,7 +475,7 @@ public class TacoBoomServlet extends HttpServlet {
 
 		if (errorString == null) {
 			try {
-				TacoServices.insertTaco(conn, taco);
+				TacoBoomServices.insertTaco(taco);
 			} catch (SQLException e) {
 				e.printStackTrace();
 				errorString = e.getMessage();
@@ -507,6 +503,12 @@ public class TacoBoomServlet extends HttpServlet {
 		}
 	}
 
+	/*
+	После нажатия кнопки "Подтвердить" на странице paymentView.jsp этот метод
+	проверяет на валидность номер карты, имя ее владельца и срок действия. В случае, если
+	все хорошо, перенаправляет на страцу с информацией об успешной оплате, в противном
+	случае перенаправляет на страницу paymentInfoView.jsp с сообщением об ошибке.
+	 */
 	private void paymentProcess(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		String number = request.getParameter("number");
 		String name = request.getParameter("name");

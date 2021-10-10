@@ -153,6 +153,7 @@ public class Taco {
 		return totalPrice;
 	}
 
+	// считает общую стоимость тако с учетом выбранных игредиентов
 	public void countTotalPrice(float totalPrice) {
 		this.totalPrice = flapjack.getPrice() + chicken.getPrice() + garlic.getPrice()
 				+ onion.getPrice() + tomato.getPrice()+ haricot.getPrice() + cheese.getPrice() + avocado.getPrice();

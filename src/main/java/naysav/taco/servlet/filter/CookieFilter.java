@@ -16,8 +16,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import naysav.taco.repository.UserAccount;
-import naysav.taco.services.TacoServices;
+import naysav.taco.services.TacoBoomServices;
 
+
+/*
+Фильтр предназначен на случай, если пользователь вошел в систему и
+запомнил информацию прошлого доступа (например, за день до этого).
+И теперь пользователь возвращается, этот Filter будет проверять
+информацию Cookie, которые сохранились браузером и автоматически входит в систему.
+*/
 @WebFilter(filterName = "cookieFilter", urlPatterns = { "/*" })
 public class CookieFilter implements Filter {
 
@@ -73,10 +80,10 @@ public class CookieFilter implements Filter {
 		if (checked == null && conn != null) {
 			String userName = getUserNameInCookie(req);
 			try {
-				UserAccount user = TacoServices.findUser(conn, userName);
+				UserAccount user = TacoBoomServices.findUser(userName);
 				// В JSP можно получить доступ через ${loginedUser}
 				session.setAttribute("loginedUser", user);
-			} catch (SQLException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			// Отметить проверенные Cookie.
