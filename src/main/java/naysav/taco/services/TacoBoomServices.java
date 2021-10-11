@@ -9,7 +9,6 @@ import naysav.taco.repository.*;
 
 // Класс записывает, удаляет, читает данные из БД tacoweb
 public class TacoBoomServices {
-
 	// Метод создает connection к схеме tacoweb (MySQL)
 	public static Connection getConnection()
 			throws ClassNotFoundException, SQLException {

@@ -13,18 +13,12 @@ import java.util.List;
 
 @WebServlet(urlPatterns = {"/TacoBoom"})
 public class TacoBoomServlet extends HttpServlet {
-
-	// ATT_NAME_CONNECTION - имя атрибута, хранящего соединение с БД
-	public static final String ATT_NAME_CONNECTION = "ATTRIBUTE_FOR_CONNECTION";
-
 	// ATT_NAME_USER_NAME - имя атрибута, хранящего cookie пользователя
 	private static final String ATT_NAME_USER_NAME = "ATTRIBUTE_FOR_STORE_USER_NAME_IN_COOKIE";
 
 	public TacoBoomServlet() {
 		super();
 	}
-
-
 
 	private UserAccount getLoginedUser(HttpServletRequest request) throws Exception {
 		HttpSession session = request.getSession();
@@ -496,7 +490,6 @@ public class TacoBoomServlet extends HttpServlet {
 		// Redirect (перенаправить) к странице со списком продуктов.
 		else {
 			request.setAttribute("successMessage", "Тако успешно создан! Состав заказа можно посмотреть в корзине.");
-//			response.sendRedirect(request.getContextPath() + "/createTaco");
 			RequestDispatcher dispatcher = request.getServletContext()
 					.getRequestDispatcher("/WEB-INF/views/createTacoView.jsp");
 			dispatcher.forward(request, response);
