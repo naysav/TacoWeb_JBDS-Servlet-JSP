@@ -1,4 +1,5 @@
 # TacoWeb_JBDS-Servlet-JSP
+# http://87.247.157.161:8080/TacoBoom/ - приложение, развернутое на сервере.
 Я использовал 3 БД: product, tacos, user_account.
 
 Содержание БД product, с которым работает моя программа:
