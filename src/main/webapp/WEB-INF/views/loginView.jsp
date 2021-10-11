@@ -40,11 +40,19 @@
                             </div>
                         </div>
                         <div class="form-check ml-3 pb-2 mr-sm-2">
-                            <input class="form-check-input" type="checkbox" id="inlineFormCheck" name="rememberMe" value= "Y">
-                            <label class="form-check-label " for="inlineFormCheck">
-                                Запомнить меня
-                            </label>
-                            <a href="${pageContext.request.contextPath}/TacoBoom?rule=registrationPage" class="ml-5 card-link col-sm-4">Еще не зарегистрированы?</a>
+                            <table>
+                                <tr>
+                                    <td style="width: 50%">
+                                        <input class="form-check-input" type="checkbox" id="inlineFormCheck" name="rememberMe" value= "Y">
+                                        <label class="form-check-label " for="inlineFormCheck">
+                                            Запомнить меня
+                                        </label>
+                                    </td>
+                                    <td style="width: 50%">
+                                        <a href="${pageContext.request.contextPath}/TacoBoom?rule=registrationPage" class="card-link">Еще не зарегистрированы?</a>
+                                    </td>
+                                </tr>
+                            </table>
                         </div>
                     </div>
 

@@ -13,7 +13,6 @@
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
-    <link href="WEB-INF/assets/css/st.css" rel="stylesheet">
     <style>
         p { text-align: justify; }
     </style>
@@ -37,7 +36,7 @@
         </ol>
         <div class="carousel-inner" role="listbox">
             <div class="carousel-item active">
-                <img class="d-block w-100" src="taco1.png" alt="First slide">
+                <img class="d-block w-100" src="../../taco1.png" alt="First slide">
                 <div class="container">
                     <div class="carousel-caption text-right h-75">
                         <table>
@@ -54,7 +53,7 @@
                 </div>
             </div>
             <div class="carousel-item">
-                <img class="d-block w-100" src="taco2.png" alt="Second slide">
+                <img class="d-block w-100" src="../../taco2.png" alt="Second slide">
                 <div class="container">
                     <div class="carousel-caption text-center h-100">
                         <h1 class="pt-5">100% ингредиентов от российских поставщиков!</h1>
@@ -62,7 +61,7 @@
                 </div>
             </div>
             <div class="carousel-item">
-                <img class="d-block w-100" src="taco3.png" alt="Third slide">
+                <img class="d-block w-100" src="../../taco3.png" alt="Third slide">
                 <div class="container">
                     <div class="carousel-caption text-left h-75">
                         <table>

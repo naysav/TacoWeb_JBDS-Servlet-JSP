@@ -15,12 +15,27 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
     <link href="../assets/css/st.css" rel="stylesheet">
+    <style>
+        html, body {
+            height: 100%;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+        .content {
+            flex: 1 0 auto;
+        }
+        .footer {
+            flex-shrink: 0;
+        }
+    </style>
 </head>
 <body>
 
 <jsp:include page="_navbar_logOUT.jsp"/>
 
-<div class="container">
+<div class="container pb-4 h-100">
     <h3 class="pt-4">Список выбранных тако</h3>
 
     <p style="color: red;">${errorString}</p>
@@ -39,6 +54,10 @@
         <p>Стоимость: ${taco.totalPrice} руб. <a href="TacoBoom?rule=deleteTacoProcess&id=${taco.id}">Удалить</a></p>
     </c:forEach>
 
+    <c:if test="${orderPrice == 0}">
+        <h5>Чтобы что-то оплатить, нужно что-то заказать! Соберите свой первый тако, нажав на "Собрать тако".</h5>
+    </c:if>
+
     <c:if test="${orderPrice > 0}">
         <div class="d-block float-right">
             <h5>Итоговая сумма заказа - ${orderPrice} руб.</h5>
@@ -48,6 +67,8 @@
         </div>
     </c:if>
 </div>
+
+<jsp:include page="_footer.jsp"/>
 
 </body>
 </html>

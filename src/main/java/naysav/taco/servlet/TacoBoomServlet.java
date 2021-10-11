@@ -150,7 +150,6 @@ public class TacoBoomServlet extends HttpServlet {
 		request.setAttribute("errorString", errorString);
 		request.setAttribute("tacoList", list);
 		request.setAttribute("orderPrice", orderPrice);
-		System.out.println("loadCreateTacoPage");
 		dispatcher.forward(request, response);
 	}
 

@@ -60,6 +60,9 @@
                 <div class="container text-center pb-3">
                     <button type="submit" class="btn btn-outline-primary" style="width: 12rem;">Зарегистрироваться</button>
                 </div>
+                <div class="container text-center pb-3">
+                    <a href="${pageContext.request.contextPath}/TacoBoom?rule=homePage" type="button" class="card-link">Вернуться на главную страницу</a>
+                </div>
             </form>
         </div>
     </div>

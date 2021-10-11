@@ -18,7 +18,7 @@
 
 <jsp:include page="_navbar_logOUT.jsp"/>
 
-<div class="container">
+<div class="container pb-3">
     <h3 class="pt-4">Список ингредиентов</h3>
 
     <p style="color: red;">${errorString}</p>
@@ -77,5 +77,6 @@
     </form>
 </div>
 
+<jsp:include page="_footer.jsp"/>
 </body>
 </html>
